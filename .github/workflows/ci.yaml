@@ -1,4 +1,6 @@
 name: "CI"
+env:
+  STORE_PATH:
 
 on:
   push:
@@ -10,9 +12,8 @@ on:
 
 jobs:
   test:
-    name: test
+    name: Test
     runs-on: ubuntu-latest
-
     steps:
       - name: Checking out changes
         uses: actions/checkout@v3
@@ -20,26 +21,57 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
 
-      - name: Install Dependencies
-        run: npm ci
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
 
-      - name: Test
-        run: npm run test
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Running Test
+        run: pnpm run test
 
   build:
-    name: build
+    name: Build
     runs-on: ubuntu-latest
     needs: test
-
     steps:
-      - name: Checking out changes
-        uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v3
+        name: Install pnpm
+        with:
+          version: 8
+          run_install: false
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - name: Install Dependencies
-        run: npm ci
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
 
-      - name: Build
-        run: npm run build
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Building Package
+        run: pnpm run build
