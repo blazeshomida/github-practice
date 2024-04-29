@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checking out changes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v3
         name: Install pnpm
@@ -40,7 +40,7 @@ jobs:
     needs: test
     steps:
       - name: Checking out changes
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v3
         name: Install pnpm
