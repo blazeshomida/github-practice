@@ -8,18 +8,18 @@
     "build": "rm -rf ./dist && pnpm tsc --outDir './dist'",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "lint": "eslint ."
   },
   "devDependencies": {
+    "@types/eslint": "^8.56.10",
+    "@types/node": "^20.12.7",
     "@vitest/ui": "latest",
+    "eslint": "^9.1.1",
+    "globals": "^15.1.0",
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^7.8.0",
     "vite": "latest",
     "vitest": "latest"
-  },
-  "stackblitz": {
-    "startCommand": "npm run test:ui"
-  },
-  "dependencies": {
-    "@types/node": "^20.12.7",
-    "typescript": "^5.4.5"
   }
 }

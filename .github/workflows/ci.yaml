@@ -10,9 +10,12 @@ on:
       - main
 
 jobs:
-  test:
-    name: Test
+  tasks:
+    name: Pre-Build Tasks
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tasks: [lint, test]
     steps:
       - name: Checking out changes
         uses: actions/checkout@v4
@@ -31,13 +34,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Running Test
-        run: pnpm run test
+      - name: "Running: ${{ matrix.tasks }}"
+        run: pnpm run ${{ matrix.tasks }}
 
   build:
     name: Build
     runs-on: ubuntu-latest
-    needs: test
+    needs: tasks
     steps:
       - name: Checking out changes
         uses: actions/checkout@v4
