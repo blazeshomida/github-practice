@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: Running Test
+      - name: "Running: ${{ matrix.tasks }}"
         run: pnpm run ${{ matrix.tasks }}
 
   build:
