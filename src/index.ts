@@ -2,8 +2,11 @@
 import { Command } from "commander";
 import { intro, outro, note, text, multiselect, spinner } from "./prompts.ts";
 import path from "path";
-import copy from "ncp";
+import ncp from "ncp";
 import fs from "fs";
+import { promisify } from "util";
+
+const copy = promisify(ncp);
 const program = new Command();
 const templatesDir = path.join(path.dirname(__dirname), "src");
 const s = spinner();
@@ -40,11 +43,7 @@ program
     s.stop("Done");
 
     if (!fs.existsSync(targetDir)) {
-      copy(templatesDir, targetDir, (err) => {
-        if (err) {
-          console.log(err?.join(","));
-        }
-      });
+      await copy(templatesDir, targetDir);
     }
     outro("Perfect lets go!!");
   });
