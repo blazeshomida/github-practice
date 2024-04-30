@@ -1,18 +1,4 @@
 import { assert, expect, test } from "vitest";
-import { squared } from "../src/index.ts";
-
-// Edit an assertion and save to see HMR in action
-
-test("Math.sqrt()", () => {
-  expect(Math.sqrt(4)).toBe(2);
-  expect(Math.sqrt(144)).toBe(12);
-  expect(Math.sqrt(2)).toBe(Math.SQRT2);
-});
-
-test("Squared", () => {
-  expect(squared(2)).toBe(4);
-  expect(squared(12)).toBe(144);
-});
 
 test("JSON", () => {
   const input = {

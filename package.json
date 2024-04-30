@@ -4,23 +4,33 @@
   "private": true,
   "license": "MIT",
   "main": "index.js",
+  "bin": "dist/index.js",
   "scripts": {
-    "build": "rm -rf ./dist && pnpm tsup",
+    "build": "rm -rf ./dist && pnpm tsup-node",
+    "dev": "tsup-node --watch",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
-    "lint": "eslint ."
+    "lint": "eslint src"
   },
   "devDependencies": {
+    "@clack/core": "^0.3.4",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.12.7",
     "@vitest/ui": "latest",
+    "commander": "^12.0.0",
     "eslint": "^9.1.1",
     "globals": "^15.1.0",
+    "sisteransi": "^1.0.5",
+    "tsup": "^8.0.2",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.8.0",
     "vite": "latest",
-    "vitest": "latest",
-    "tsup": "^8.0.2"
+    "vitest": "latest"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "is-unicode-supported": "^2.0.0",
+    "picocolors": "^1.0.0"
   }
 }

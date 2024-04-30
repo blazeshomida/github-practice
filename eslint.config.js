@@ -9,5 +9,6 @@ export default tseslint.config(
   ...tseslint.configs.stylistic,
   {
     files: ["src/**/*.ts"],
+    ignores: ["**/dist/", "**/node_modules/"],
   }
 );
