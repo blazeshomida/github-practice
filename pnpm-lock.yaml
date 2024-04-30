@@ -24,6 +24,9 @@ importers:
       '@types/eslint':
         specifier: ^8.56.10
         version: 8.56.10
+      '@types/ncp':
+        specifier: ^2.0.8
+        version: 2.0.8
       '@types/node':
         specifier: ^20.12.7
         version: 20.12.7
@@ -39,6 +42,9 @@ importers:
       globals:
         specifier: ^15.1.0
         version: 15.1.0
+      ncp:
+        specifier: ^2.0.0
+        version: 2.0.0
       sisteransi:
         specifier: ^1.0.5
         version: 1.0.5
@@ -513,6 +519,9 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+
+  '@types/ncp@2.0.8':
+    resolution: {integrity: sha512-pLNWVLCVWBLVM4F2OPjjK6FWFtByFKD7LhHryF+MbVLws7ENj09mKxRFlhkGPOXfJuaBAG+2iADKJsZwnAbYDw==}
 
   '@types/node@20.12.7':
     resolution: {integrity: sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==}
@@ -1087,6 +1096,10 @@ packages:
 
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
+
+  ncp@2.0.0:
+    resolution: {integrity: sha512-zIdGUrPRFTUELUvr3Gmc7KZ2Sw/h1PiVM0Af/oHB6zgnV1ikqSfRk+TOufi79aHYCW3NiOXmr1BP5nWbzojLaA==}
+    hasBin: true
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -1810,6 +1823,10 @@ snapshots:
 
   '@types/json-schema@7.0.15': {}
 
+  '@types/ncp@2.0.8':
+    dependencies:
+      '@types/node': 20.12.7
+
   '@types/node@20.12.7':
     dependencies:
       undici-types: 5.26.5
@@ -2458,6 +2475,8 @@ snapshots:
   nanoid@3.3.7: {}
 
   natural-compare@1.4.0: {}
+
+  ncp@2.0.0: {}
 
   normalize-path@3.0.0: {}
 

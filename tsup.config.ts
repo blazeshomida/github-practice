@@ -6,6 +6,7 @@ export default defineConfig({
   dts: true,
   clean: true,
   minify: true,
+  shims: true,
   outDir: "./dist",
-  format: ["cjs", "esm", "iife"],
+  format: ["cjs", "esm"],
 });
