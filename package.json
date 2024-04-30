@@ -5,7 +5,7 @@
   "license": "MIT",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf ./dist && pnpm tsc --outDir './dist'",
+    "build": "rm -rf ./dist && pnpm tsup",
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
@@ -20,6 +20,7 @@
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.8.0",
     "vite": "latest",
-    "vitest": "latest"
+    "vitest": "latest",
+    "tsup": "^8.0.2"
   }
 }
