@@ -16,11 +16,13 @@
   "devDependencies": {
     "@clack/core": "^0.3.4",
     "@types/eslint": "^8.56.10",
+    "@types/ncp": "^2.0.8",
     "@types/node": "^20.12.7",
     "@vitest/ui": "latest",
     "commander": "^12.0.0",
     "eslint": "^9.1.1",
     "globals": "^15.1.0",
+    "ncp": "^2.0.0",
     "sisteransi": "^1.0.5",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5",

@@ -1,9 +1,12 @@
 #! /bin/env node
-
 import { Command } from "commander";
-import { intro, outro, log, note, multiselect } from "./prompts.ts";
-import color from "picocolors";
+import { intro, outro, note, text, multiselect, spinner } from "./prompts.ts";
+import path from "path";
+import copy from "ncp";
+import fs from "fs";
 const program = new Command();
+const templatesDir = path.join(path.dirname(__dirname), "src");
+const s = spinner();
 program
   .name("frame-x")
   .description("Practice project scaffolding for any project.")
@@ -13,10 +16,16 @@ program
   .command("new")
   .description("Create a new project.")
   .option("--typescript", "Typescript project")
-  .action(async (opts: Record<string, string>) => {
-    note("Let's create a new project");
+  .action(async () => {
+    note("😁 Let's create a new project");
     intro("Ready?");
-    log.error(color.red(JSON.stringify(opts)));
+
+    const targetDirAnswer = await text({
+      message: "What directory?",
+    });
+
+    if (typeof targetDirAnswer !== "string") return;
+    const targetDir = path.join(process.cwd(), targetDirAnswer);
     await multiselect({
       message: "Select your tool(s)",
       options: [
@@ -25,7 +34,18 @@ program
         { value: "prettier", label: "Prettier" },
       ],
     });
-    log.info(color.blue(JSON.stringify(opts)));
+    s.start("Start");
+    await new Promise((res) => setTimeout(res, 2000));
+    s.message("Spinning");
+    s.stop("Done");
+
+    if (!fs.existsSync(targetDir)) {
+      copy(templatesDir, targetDir, (err) => {
+        if (err) {
+          console.log(err?.join(","));
+        }
+      });
+    }
     outro("Perfect lets go!!");
   });
 

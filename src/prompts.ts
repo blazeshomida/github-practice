@@ -3,14 +3,31 @@ import {
   ConfirmPrompt,
   MultiSelectPrompt,
   PasswordPrompt,
-  SelectKeyPrompt,
   SelectPrompt,
   TextPrompt,
 } from "@clack/core";
 import type { State } from "@clack/core";
 import isUnicodeSupported from "is-unicode-supported";
-import color from "picocolors";
+import pc from "picocolors";
 import { cursor, erase } from "sisteransi";
+
+// Semantic color definitions
+const colors = {
+  primary: pc.cyan, // Used for primary actions and active elements, draws attention to key interfaces.
+  secondary: pc.magenta, // Used for secondary actions, often for less critical actions or supplementary UI.
+  success: pc.green, // Indicates successful operations or confirmations, encouraging feedback.
+  error: pc.red, // Signifies errors, critical failures, and urgent negative outcomes.
+  white: pc.white, // General-purpose color for text that requires a standard, clear presentation.
+  bgWhite: pc.bgWhite, // Background color for emphasis or to distinguish sections of the UI.
+  warning: pc.yellow, // Used for warnings or to draw attention to potential issues that need consideration.
+  info: pc.blue, // Used for informational messages that provide guidance or system statuses.
+  structural: pc.gray, // Used for structural elements in the UI, such as borders and separators.
+  dim: pc.dim, // Subdued text for less emphasis, used for secondary information or less important data.
+  disabled: pc.strikethrough, // Indicates disabled or unavailable options.
+  inverse: pc.inverse, // Used for text that needs to stand out by inverting the usual foreground and background colors.
+  hidden: pc.hidden, // Used to hide text, typically for sensitive or conditional display elements.
+  reset: pc.reset, // Resets the coloring to default terminal colors, often used at the end of a styled line.
+};
 
 const unicode = isUnicodeSupported();
 const s = (c: string, fallback: string) => (unicode ? c : fallback);
@@ -44,13 +61,13 @@ const symbol = (state: State) => {
   switch (state) {
     case "initial":
     case "active":
-      return color.cyan(S_STEP_ACTIVE);
+      return colors.white(S_STEP_ACTIVE);
     case "cancel":
-      return color.red(S_STEP_CANCEL);
+      return colors.warning(S_STEP_CANCEL);
     case "error":
-      return color.yellow(S_STEP_ERROR);
+      return colors.error(S_STEP_ERROR);
     case "submit":
-      return color.green(S_STEP_SUBMIT);
+      return colors.primary(S_STEP_SUBMIT);
   }
 };
 
@@ -93,7 +110,7 @@ const limitOptions = <TOption>(
       const isTopLimit = i === 0 && shouldRenderTopEllipsis;
       const isBottomLimit = i === arr.length - 1 && shouldRenderBottomEllipsis;
       return isTopLimit || isBottomLimit
-        ? color.dim("...")
+        ? colors.dim("...")
         : style(option, i + slidingWindowLocation === cursor);
     });
 };
@@ -112,32 +129,32 @@ export const text = (opts: TextOptions) => {
     defaultValue: opts.defaultValue,
     initialValue: opts.initialValue,
     render() {
-      const title = `${color.gray(S_BAR)}\n${symbol(this.state)}  ${
+      const title = `${colors.structural(S_BAR)}\n${symbol(this.state)}  ${
         opts.message
       }\n`;
       const placeholder = opts.placeholder
-        ? color.inverse(opts.placeholder[0]) +
-          color.dim(opts.placeholder.slice(1))
-        : color.inverse(color.hidden("_"));
+        ? colors.inverse(opts.placeholder[0]) +
+          colors.dim(opts.placeholder.slice(1))
+        : colors.inverse(colors.hidden("_"));
       const value = !this.value ? placeholder : this.valueWithCursor;
 
       switch (this.state) {
         case "error":
-          return `${title.trim()}\n${color.yellow(
+          return `${title.trim()}\n${colors.error(
             S_BAR
-          )}  ${value}\n${color.yellow(S_BAR_END)}  ${color.yellow(
+          )}  ${value}\n${colors.error(S_BAR_END)}  ${colors.error(
             this.error
           )}\n`;
         case "submit":
-          return `${title}${color.gray(S_BAR)}  ${color.dim(
+          return `${title}${colors.structural(S_BAR)}  ${colors.dim(
             this.value || opts.placeholder
           )}`;
         case "cancel":
-          return `${title}${color.gray(S_BAR)}  ${color.strikethrough(
-            color.dim(this.value ?? "")
-          )}${this.value?.trim() ? "\n" + color.gray(S_BAR) : ""}`;
+          return `${title}${colors.structural(S_BAR)}  ${colors.disabled(
+            colors.dim(this.value ?? "")
+          )}${this.value?.trim() ? "\n" + colors.structural(S_BAR) : ""}`;
         default:
-          return `${title}${color.cyan(S_BAR)}  ${value}\n${color.cyan(
+          return `${title}${colors.primary(S_BAR)}  ${value}\n${colors.primary(
             S_BAR_END
           )}\n`;
       }
@@ -155,7 +172,7 @@ export const password = (opts: PasswordOptions) => {
     validate: opts.validate,
     mask: opts.mask ?? S_PASSWORD_MASK,
     render() {
-      const title = `${color.gray(S_BAR)}\n${symbol(this.state)}  ${
+      const title = `${colors.structural(S_BAR)}\n${symbol(this.state)}  ${
         opts.message
       }\n`;
       const value = this.valueWithCursor;
@@ -163,19 +180,19 @@ export const password = (opts: PasswordOptions) => {
 
       switch (this.state) {
         case "error":
-          return `${title.trim()}\n${color.yellow(
+          return `${title.trim()}\n${colors.error(
             S_BAR
-          )}  ${masked}\n${color.yellow(S_BAR_END)}  ${color.yellow(
+          )}  ${masked}\n${colors.error(S_BAR_END)}  ${colors.error(
             this.error
           )}\n`;
         case "submit":
-          return `${title}${color.gray(S_BAR)}  ${color.dim(masked)}`;
+          return `${title}${colors.structural(S_BAR)}  ${colors.dim(masked)}`;
         case "cancel":
-          return `${title}${color.gray(S_BAR)}  ${color.strikethrough(
-            color.dim(masked ?? "")
-          )}${masked ? "\n" + color.gray(S_BAR) : ""}`;
+          return `${title}${colors.structural(S_BAR)}  ${colors.disabled(
+            colors.dim(masked ?? "")
+          )}${masked ? "\n" + colors.structural(S_BAR) : ""}`;
         default:
-          return `${title}${color.cyan(S_BAR)}  ${value}\n${color.cyan(
+          return `${title}${colors.primary(S_BAR)}  ${value}\n${colors.primary(
             S_BAR_END
           )}\n`;
       }
@@ -197,28 +214,28 @@ export const confirm = (opts: ConfirmOptions) => {
     inactive,
     initialValue: opts.initialValue ?? true,
     render() {
-      const title = `${color.gray(S_BAR)}\n${symbol(this.state)}  ${
+      const title = `${colors.structural(S_BAR)}\n${symbol(this.state)}  ${
         opts.message
       }\n`;
       const value = this.value ? active : inactive;
 
       switch (this.state) {
         case "submit":
-          return `${title}${color.gray(S_BAR)}  ${color.dim(value)}`;
+          return `${title}${colors.structural(S_BAR)}  ${colors.dim(value)}`;
         case "cancel":
-          return `${title}${color.gray(S_BAR)}  ${color.strikethrough(
-            color.dim(value)
-          )}\n${color.gray(S_BAR)}`;
+          return `${title}${colors.structural(S_BAR)}  ${colors.disabled(
+            colors.dim(value)
+          )}\n${colors.structural(S_BAR)}`;
         default: {
-          return `${title}${color.cyan(S_BAR)}  ${
+          return `${title}${colors.primary(S_BAR)}  ${
             this.value
-              ? `${color.green(S_RADIO_ACTIVE)} ${active}`
-              : `${color.dim(S_RADIO_INACTIVE)} ${color.dim(active)}`
-          } ${color.dim("/")} ${
+              ? `${colors.primary(S_RADIO_ACTIVE)} ${active}`
+              : `${colors.dim(S_RADIO_INACTIVE)} ${colors.dim(active)}`
+          } ${colors.dim("/")} ${
             !this.value
-              ? `${color.green(S_RADIO_ACTIVE)} ${inactive}`
-              : `${color.dim(S_RADIO_INACTIVE)} ${color.dim(inactive)}`
-          }\n${color.cyan(S_BAR_END)}\n`;
+              ? `${colors.primary(S_RADIO_ACTIVE)} ${inactive}`
+              : `${colors.dim(S_RADIO_INACTIVE)} ${colors.dim(inactive)}`
+          }\n${colors.primary(S_BAR_END)}\n`;
         }
       }
     },
@@ -246,15 +263,15 @@ export const select = <Value>(opts: SelectOptions<Value>) => {
     const label = option.label ?? String(option.value);
     switch (state) {
       case "selected":
-        return `${color.dim(label)}`;
+        return `${colors.primary(label)}`;
       case "active":
-        return `${color.green(S_RADIO_ACTIVE)} ${label} ${
-          option.hint ? color.dim(`(${option.hint})`) : ""
+        return `${colors.dim(S_RADIO_ACTIVE)} ${label} ${
+          option.hint ? colors.dim(`(${option.hint})`) : ""
         }`;
       case "cancelled":
-        return `${color.strikethrough(color.dim(label))}`;
+        return `${colors.disabled(colors.dim(label))}`;
       default:
-        return `${color.dim(S_RADIO_INACTIVE)} ${color.dim(label)}`;
+        return `${colors.dim(S_RADIO_INACTIVE)} ${colors.dim(label)}`;
     }
   };
 
@@ -262,78 +279,30 @@ export const select = <Value>(opts: SelectOptions<Value>) => {
     options: opts.options,
     initialValue: opts.initialValue,
     render() {
-      const title = `${color.gray(S_BAR)}\n${symbol(this.state)}  ${
+      const title = `${colors.structural(S_BAR)}\n${symbol(this.state)}  ${
         opts.message
       }\n`;
 
       switch (this.state) {
         case "submit":
-          return `${title}${color.gray(S_BAR)}  ${opt(
+          return `${title}${colors.structural(S_BAR)}  ${opt(
             this.options[this.cursor],
             "selected"
           )}`;
         case "cancel":
-          return `${title}${color.gray(S_BAR)}  ${opt(
+          return `${title}${colors.structural(S_BAR)}  ${opt(
             this.options[this.cursor],
             "cancelled"
-          )}\n${color.gray(S_BAR)}`;
+          )}\n${colors.structural(S_BAR)}`;
         default: {
-          return `${title}${color.cyan(S_BAR)}  ${limitOptions({
+          return `${title}${colors.primary(S_BAR)}  ${limitOptions({
             cursor: this.cursor,
             options: this.options,
             maxItems: opts.maxItems,
             style: (item, active) => opt(item, active ? "active" : "inactive"),
-          }).join(`\n${color.cyan(S_BAR)}  `)}\n${color.cyan(S_BAR_END)}\n`;
-        }
-      }
-    },
-  }).prompt() as Promise<Value | symbol>;
-};
-
-export const selectKey = <Value extends string>(opts: SelectOptions<Value>) => {
-  const opt = (
-    option: Option<Value>,
-    state: "inactive" | "active" | "selected" | "cancelled" = "inactive"
-  ) => {
-    const label = option.label ?? String(option.value);
-    if (state === "selected") {
-      return `${color.dim(label)}`;
-    } else if (state === "cancelled") {
-      return `${color.strikethrough(color.dim(label))}`;
-    } else if (state === "active") {
-      return `${color.bgCyan(color.gray(` ${option.value} `))} ${label} ${
-        option.hint ? color.dim(`(${option.hint})`) : ""
-      }`;
-    }
-    return `${color.gray(
-      color.bgWhite(color.inverse(` ${option.value} `))
-    )} ${label} ${option.hint ? color.dim(`(${option.hint})`) : ""}`;
-  };
-
-  return new SelectKeyPrompt({
-    options: opts.options,
-    initialValue: opts.initialValue,
-    render() {
-      const title = `${color.gray(S_BAR)}\n${symbol(this.state)}  ${
-        opts.message
-      }\n`;
-      const value = this.options.find((opt) => opt.value === this.value);
-      if (!value) return;
-
-      switch (this.state) {
-        case "submit":
-          return `${title}${color.gray(S_BAR)}  ${opt(value, "selected")}`;
-        case "cancel":
-          return `${title}${color.gray(S_BAR)}  ${opt(
-            this.options[0],
-            "cancelled"
-          )}\n${color.gray(S_BAR)}`;
-        default: {
-          return `${title}${color.cyan(S_BAR)}  ${this.options
-            .map((option, i) =>
-              opt(option, i === this.cursor ? "active" : "inactive")
-            )
-            .join(`\n${color.cyan(S_BAR)}  `)}\n${color.cyan(S_BAR_END)}\n`;
+          }).join(`\n${colors.primary(S_BAR)}  `)}\n${colors.primary(
+            S_BAR_END
+          )}\n`;
         }
       }
     },
@@ -361,21 +330,21 @@ export const multiselect = <Value>(opts: MultiSelectOptions<Value>) => {
   ) => {
     const label = option.label ?? String(option.value);
     if (state === "active") {
-      return `${color.cyan(S_CHECKBOX_ACTIVE)} ${label} ${
-        option.hint ? color.dim(`(${option.hint})`) : ""
+      return `${colors.primary(S_CHECKBOX_ACTIVE)} ${label} ${
+        option.hint ? colors.dim(`(${option.hint})`) : ""
       }`;
     } else if (state === "selected") {
-      return `${color.green(S_CHECKBOX_SELECTED)} ${color.dim(label)}`;
+      return `${colors.primary(S_CHECKBOX_SELECTED)} ${colors.dim(label)}`;
     } else if (state === "cancelled") {
-      return `${color.strikethrough(color.dim(label))}`;
+      return `${colors.disabled(colors.dim(label))}`;
     } else if (state === "active-selected") {
-      return `${color.green(S_CHECKBOX_SELECTED)} ${label} ${
-        option.hint ? color.dim(`(${option.hint})`) : ""
+      return `${colors.primary(S_CHECKBOX_SELECTED)} ${label} ${
+        option.hint ? colors.dim(`(${option.hint})`) : ""
       }`;
     } else if (state === "submitted") {
-      return `${color.dim(label)}`;
+      return `${colors.dim(label)}`;
     }
-    return `${color.dim(S_CHECKBOX_INACTIVE)} ${color.dim(label)}`;
+    return `${colors.dim(S_CHECKBOX_INACTIVE)} ${colors.dim(label)}`;
   };
 
   return new MultiSelectPrompt({
@@ -385,18 +354,18 @@ export const multiselect = <Value>(opts: MultiSelectOptions<Value>) => {
     cursorAt: opts.cursorAt,
     validate(selected: Value[]) {
       if (this.required && selected.length === 0)
-        return `Please select at least one option.\n${color.reset(
-          color.dim(
-            `Press ${color.gray(
-              color.bgWhite(color.inverse(" space "))
-            )} to select, ${color.gray(
-              color.bgWhite(color.inverse(" enter "))
+        return `Please select at least one option.\n${colors.reset(
+          colors.dim(
+            `Press ${colors.structural(
+              colors.bgWhite(colors.inverse(" space "))
+            )} to select, ${colors.structural(
+              colors.bgWhite(colors.inverse(" enter "))
             )} to submit`
           )
         )}`;
     },
     render() {
-      const title = `${color.gray(S_BAR)}\n${symbol(this.state)}  ${
+      const title = `${colors.structural(S_BAR)}\n${symbol(this.state)}  ${
         opts.message
       }\n`;
 
@@ -413,20 +382,20 @@ export const multiselect = <Value>(opts: MultiSelectOptions<Value>) => {
 
       switch (this.state) {
         case "submit": {
-          return `${title}${color.gray(S_BAR)}  ${
+          return `${title}${colors.structural(S_BAR)}  ${
             this.options
               .filter(({ value }) => this.value.includes(value))
               .map((option) => opt(option, "submitted"))
-              .join(color.dim(", ")) || color.dim("none")
+              .join(colors.dim(", ")) || colors.dim("none")
           }`;
         }
         case "cancel": {
           const label = this.options
             .filter(({ value }) => this.value.includes(value))
             .map((option) => opt(option, "cancelled"))
-            .join(color.dim(", "));
-          return `${title}${color.gray(S_BAR)}  ${
-            label.trim() ? `${label}\n${color.gray(S_BAR)}` : ""
+            .join(colors.dim(", "));
+          return `${title}${colors.structural(S_BAR)}  ${
+            label.trim() ? `${label}\n${colors.structural(S_BAR)}` : ""
           }`;
         }
         case "error": {
@@ -434,32 +403,34 @@ export const multiselect = <Value>(opts: MultiSelectOptions<Value>) => {
             .split("\n")
             .map((ln, i) =>
               i === 0
-                ? `${color.yellow(S_BAR_END)}  ${color.yellow(ln)}`
+                ? `${colors.error(S_BAR_END)}  ${colors.error(ln)}`
                 : `   ${ln}`
             )
             .join("\n");
           return (
             title +
-            color.yellow(S_BAR) +
+            colors.error(S_BAR) +
             "  " +
             limitOptions({
               options: this.options,
               cursor: this.cursor,
               maxItems: opts.maxItems,
               style: styleOption,
-            }).join(`\n${color.yellow(S_BAR)}  `) +
+            }).join(`\n${colors.error(S_BAR)}  `) +
             "\n" +
             footer +
             "\n"
           );
         }
         default: {
-          return `${title}${color.cyan(S_BAR)}  ${limitOptions({
+          return `${title}${colors.primary(S_BAR)}  ${limitOptions({
             options: this.options,
             cursor: this.cursor,
             maxItems: opts.maxItems,
             style: styleOption,
-          }).join(`\n${color.cyan(S_BAR)}  `)}\n${color.cyan(S_BAR_END)}\n`;
+          }).join(`\n${colors.primary(S_BAR)}  `)}\n${colors.primary(
+            S_BAR_END
+          )}\n`;
         }
       }
     },
@@ -481,33 +452,37 @@ export const note = (message = "", title = "") => {
   const msg = lines
     .map(
       (ln) =>
-        `${color.gray(S_BAR)}  ${color.dim(ln)}${" ".repeat(
+        `${colors.structural(S_BAR)}  ${colors.dim(ln)}${" ".repeat(
           len - strip(ln).length
-        )}${color.gray(S_BAR)}`
+        )}${colors.structural(S_BAR)}`
     )
     .join("\n");
   process.stdout.write(
-    `${color.gray(S_BAR)}\n${color.green(S_STEP_SUBMIT)}  ${color.reset(
-      title
-    )} ${color.gray(
+    `${colors.structural(S_BAR)}\n${colors.primary(
+      S_STEP_SUBMIT
+    )}  ${colors.reset(title)} ${colors.structural(
       S_BAR_H.repeat(Math.max(len - titleLen - 1, 1)) + S_CORNER_TOP_RIGHT
-    )}\n${msg}\n${color.gray(
+    )}\n${msg}\n${colors.structural(
       S_CONNECT_LEFT + S_BAR_H.repeat(len + 2) + S_CORNER_BOTTOM_RIGHT
     )}\n`
   );
 };
 
 export const cancel = (message = "") => {
-  process.stdout.write(`${color.gray(S_BAR_END)}  ${color.red(message)}\n\n`);
+  process.stdout.write(
+    `${colors.structural(S_BAR_END)}  ${colors.warning(message)}\n\n`
+  );
 };
 
 export const intro = (title = "") => {
-  process.stdout.write(`${color.gray(S_BAR_START)}  ${title}\n`);
+  process.stdout.write(`${colors.structural(S_BAR_START)}  ${title}\n`);
 };
 
 export const outro = (message = "") => {
   process.stdout.write(
-    `${color.gray(S_BAR)}\n${color.gray(S_BAR_END)}  ${message}\n\n`
+    `${colors.structural(S_BAR)}\n${colors.structural(
+      S_BAR_END
+    )}  ${message}\n\n`
   );
 };
 
@@ -518,36 +493,36 @@ export interface LogMessageOptions {
 export const log = {
   message: (
     message = "",
-    { symbol = color.gray(S_BAR) }: LogMessageOptions = {}
+    { symbol = colors.structural(S_BAR) }: LogMessageOptions = {}
   ) => {
-    const parts = [`${color.gray(S_BAR)}`];
+    const parts = [`${colors.structural(S_BAR)}`];
     if (message) {
       const [firstLine, ...lines] = message.split("\n");
       parts.push(
         `${symbol}  ${firstLine}`,
-        ...lines.map((ln) => `${color.gray(S_BAR)}  ${ln}`)
+        ...lines.map((ln) => `${colors.structural(S_BAR)}  ${ln}`)
       );
     }
     process.stdout.write(`${parts.join("\n")}\n`);
   },
   info: (message: string) => {
-    log.message(message, { symbol: color.blue(S_INFO) });
+    log.message(message, { symbol: colors.info(S_INFO) });
   },
   success: (message: string) => {
-    log.message(message, { symbol: color.green(S_SUCCESS) });
+    log.message(message, { symbol: colors.success(S_SUCCESS) });
   },
   step: (message: string) => {
-    log.message(message, { symbol: color.green(S_STEP_SUBMIT) });
+    log.message(message, { symbol: colors.primary(S_STEP_SUBMIT) });
   },
   warn: (message: string) => {
-    log.message(message, { symbol: color.yellow(S_WARN) });
+    log.message(message, { symbol: colors.warning(S_WARN) });
   },
   /** alias for `log.warn()`. */
   warning: (message: string) => {
     log.warn(message);
   },
   error: (message: string) => {
-    log.message(message, { symbol: color.red(S_ERROR) });
+    log.message(message, { symbol: colors.error(S_ERROR) });
   },
 };
 
@@ -591,12 +566,12 @@ export const spinner = () => {
     isSpinnerActive = true;
     unblock = block();
     _message = msg.replace(/\.+$/, "");
-    process.stdout.write(`${color.gray(S_BAR)}\n`);
+    process.stdout.write(`${colors.structural(S_BAR)}\n`);
     let frameIndex = 0;
     let dotsTimer = 0;
     registerHooks();
     loop = setInterval(() => {
-      const frame = color.magenta(frames[frameIndex]);
+      const frame = colors.secondary(frames[frameIndex]);
       const loadingDots = ".".repeat(Math.floor(dotsTimer)).slice(0, 3);
       process.stdout.write(cursor.move(-999, 0));
       process.stdout.write(erase.down(1));
@@ -612,10 +587,10 @@ export const spinner = () => {
     clearInterval(loop);
     const step =
       code === 0
-        ? color.green(S_STEP_SUBMIT)
+        ? colors.primary(S_STEP_SUBMIT)
         : code === 1
-        ? color.red(S_STEP_CANCEL)
-        : color.red(S_STEP_ERROR);
+        ? colors.warning(S_STEP_CANCEL)
+        : colors.error(S_STEP_ERROR);
     process.stdout.write(cursor.move(-999, 0));
     process.stdout.write(erase.down(1));
     process.stdout.write(`${step}  ${_message}\n`);
