@@ -1,0 +1,79 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Jack Jones",
+      "email": "jack@example.com",
+      "age": 30,
+      "city": "Honolulu"
+    },
+    {
+      "id": "2",
+      "name": "Emily Smith",
+      "email": "emily@example.com",
+      "age": 25,
+      "city": "Maui"
+    },
+    {
+      "id": "3",
+      "name": "Alex Johnson",
+      "email": "alex@example.com",
+      "age": 35,
+      "city": "Kauai"
+    },
+    {
+      "id": "4",
+      "name": "Sarah Davis",
+      "email": "sarah@example.com",
+      "age": 28,
+      "city": "Oahu"
+    },
+    {
+      "id": "5",
+      "name": "Michael Lee",
+      "email": "michael@example.com",
+      "age": 32,
+      "city": "Big Island"
+    }
+  ],
+  "posts": [
+    {
+      "id": "101",
+      "title": "Introduction to React",
+      "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "authorId": "1"
+    },
+    {
+      "id": "102",
+      "title": "Getting Started with Tailwind CSS",
+      "content": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "authorId": "2"
+    },
+    {
+      "id": "103",
+      "title": "Exploring Next.js Features",
+      "content": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "authorId": "3"
+    }
+  ],
+  "comments": [
+    {
+      "id": "201",
+      "content": "Great post!",
+      "postId": "101",
+      "userId": "4"
+    },
+    {
+      "id": "202",
+      "content": "I learned a lot from this. Thanks!",
+      "postId": "102",
+      "userId": "5"
+    },
+    {
+      "id": "203",
+      "content": "Looking forward to more content like this.",
+      "postId": "103",
+      "userId": "1"
+    }
+  ]
+}
